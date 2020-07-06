@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="What is genetic programming? Describe its history briefly.Segaran (2007) stated genetic programming is a machine-learning technique which is inspired by biological evolution and it starts with a lot o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Genetic Programming">
+<meta property="og:url" content="http://yoursite.com/2020/05/30/Genetic-Programming/index.html">
+<meta property="og:site_name" content="blackdogtop">
+<meta property="og:description" content="What is genetic programming? Describe its history briefly.Segaran (2007) stated genetic programming is a machine-learning technique which is inspired by biological evolution and it starts with a lot o">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-30T02:59:54.000Z">
+<meta property="article:modified_time" content="2020-07-06T09:32:56.166Z">
+<meta property="article:author" content="blackdogtop">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/blackcat.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/android-chrome-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Genetic Programming</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2020/07/02/%E4%BD%BF%E7%94%A8OpenCV%E8%BF%9B%E8%A1%8C%E6%96%87%E6%9C%AC%E8%A1%8C%E5%88%86%E5%89%B2/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2020/05/16/%E5%85%B3%E4%BA%8EmacOS%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8Ftexstudio%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/05/30/Genetic-Programming/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/05/30/Genetic-Programming/&text=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/05/30/Genetic-Programming/&is_video=false&description=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Genetic Programming&body=Check out this article: http://yoursite.com/2020/05/30/Genetic-Programming/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/05/30/Genetic-Programming/&name=Genetic Programming&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/05/30/Genetic-Programming/&t=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#What-is-genetic-programming-Describe-its-history-briefly"><span class="toc-number">1.</span> <span class="toc-text">What is genetic programming? Describe its history briefly.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-is-it-related-to-the-genetic-algorithms-that-we-discussed-before"><span class="toc-number">2.</span> <span class="toc-text">How is it related to the genetic algorithms that we discussed before?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What-kind-of-genotype-representations-are-used-in-GP"><span class="toc-number">3.</span> <span class="toc-text">What kind of genotype representations are used in GP?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Genetic Programming
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">blackdogtop</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-05-30T02:59:54.000Z" itemprop="datePublished">2020-05-30</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="What-is-genetic-programming-Describe-its-history-briefly"><a href="#What-is-genetic-programming-Describe-its-history-briefly" class="headerlink" title="What is genetic programming? Describe its history briefly."></a>What is genetic programming? Describe its history briefly.</h3><p>Segaran (2007) stated genetic programming is a machine-learning technique which is inspired by biological evolution and it starts with a lot of randomly generated or hand-designed programs (population) to compete in some user- defined task i.e. we can think of it as a game, the purpose is to compare which program has better performance. Meanwhile, Koza &amp; Koza (1992) pointed out that genetic programming combines Darwinian natural selection and genetic manipulation, that is, offspring programs are generated by crossover between current programs and the individuals who adapt to the environment are preserved and prosperous.</p>
+<p>I think genetic programming is different from other machine learning tech- niques that I know. First, the most machine learning techniques that we learn is to tell the program how to solve it according to the question i.e. we provide algorithms for the program to find the best parameters. Therefore, the program does not have the ability to choose independently, and always solves the problem according to the algorithm we set. At the same time, we need to recreate different algorithms for different problems. However, genetic programming tells a lot of different programs about the problem without assign specific and well-performing algorithms to each program i.e. the algorithm of each program is generated by the program itself. Second, genetic algorithm not only optimizes the algorithm through parameter adjustment, but also generates new programs through crossover and mutation, and retains the programs that perform well through natural selection.</p>
+<p>Cramer (1985) published first statement of modern “tree-based” Genetic Programming.</p>
+<p>Koza (1989) published in the International Joint Conference on Artificial Intelligence IJCAI-89 and Koza (1990) patented his invention of a GA for program evolution.</p>
+<p>Koza &amp; Koza (1992) published that really established genetic programming. Koza (2010) proposed that genetic programming was human competitive.</p>
+<h3 id="How-is-it-related-to-the-genetic-algorithms-that-we-discussed-before"><a href="#How-is-it-related-to-the-genetic-algorithms-that-we-discussed-before" class="headerlink" title="How is it related to the genetic algorithms that we discussed before?"></a>How is it related to the genetic algorithms that we discussed before?</h3><p>According to Affenzeller et al. (2009), genetic programming is an extension of genetic algorithm, and both of genetic programming(GP) and genetic algorithm(GA) are based on Darwinian principles of survival of the fittest (selection), recombination (crossover), and mutation. We can infer that for both GP and GA, select good individuals from the current individuals as parents. To be specific, each generation forms a new generation through mutation and crossover, and individuals with good fitness function performance are selected as parents as much as possible.</p>
+<p>On the other hand, although GA and GP are very similar, there are different. The difference between GA and GP is first reflected in the individual. The individual of GP is a program, and individual of GA is a fixed-length gene to represent a series of values. Like the pizza example that we mentioned in lecture, each recipe of pizza is an individual and represented by a string of 10 binary digits. Furthermore, because of the fixed-length gene, the functions embodied by genes are not very complicated. i.e. the pizza with 10 ingredients can be combined to seem to have many ($2^10$ = 1024) possibilities, but it is far from the complexity of the process of natural evolution to be simulated. Meanwhile, we abstract the evolutionary process of biology into a mathematical model. When crossover or mutation GA genes, operators probably lead to invalid states. e.g. ‘a ∗ b’ use some kind of crossover or mutation to generate ‘a + /c’ - it is obviously an invalid state. Therefore, when performing genetic algorithms, we need to always pay attention to the invalid genes caused by operators.</p>
+<p>The length (depth) of each individual of GP is generally different and the encoding of GP allows variable length unlike GA with fixed length. Meanwhile, Segaran (2007) proposed that there are many ways for representing genetic programming, tree representation is most commonly used, the node of a tree probably be a very complex function such as Gaussians, and we can construct the tree recursively. Therefore, compared with GA, it can express the nature of complex things more flexibly.</p>
+<h3 id="What-kind-of-genotype-representations-are-used-in-GP"><a href="#What-kind-of-genotype-representations-are-used-in-GP" class="headerlink" title="What kind of genotype representations are used in GP?"></a>What kind of genotype representations are used in GP?</h3><p>According to Weise (2009), Genetic Programming is divided into three types according to the genotype, Linear Genetic Programming, Tree-Based Genetic Programming and Graph-Based Genetic Programming.</p>
+<p>First, for Linear Genetic Programming, it has Generalized Linear Genetic Programming and Narrow Linear Genetic Programming.</p>
+<p>For Generalized Linear Genetic Programming, the genotype is a linear string and such Multi-Expression Programming, Cartesian Genetic Programming etc are included. On the other hand, the individual of Narrow Linear Genetic Programming can be an assembly language or high-level programming language.</p>
+<p>Perkis (1994) gave an example of Linear Genetic Programming is stack-based GP. Each program instruction gets its parameters from the stack, after performs its calculations, pushes the results back onto the stack.</p>
+<p>Next, for Tree-Based Genetic Programming, Segaran (2007) emphasised tree representation is commonly used, and it has two types of nodes, which are child nodes and an endpoint. They respectively represent an operation applied to its child nodes and a parameter with constant value. For example, the rectangular node is a subtraction operation on its two branches(Y and 2) based on the premise that the left branch is not true. Then the result will be given to the node above. It can easily modify the sub-tree by using Tree-Based Genetic Programming. Meanwhile, Tree-based Genetic Programming also has mutation and crossover and retain the syntactic validity of the expression.</p>
+<p>Last, for Graph-Based Graph-based Programming, Galvan-Lopez (2008) gave an example of program graph, and we can think of it as a circuit, the different nodes represent different typical operators (i.e. AND, OR, etc.). We can notice the structure of the program graph is similar to the structure of tree that we reference below. Because technically the tree is a special kind of graph. Therefore, we can infer the genotype representation is similar to the last tree one.</p>
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><p>Affenzeller, M., Wagner, S., Winkler, S. &amp; Beham, A. (2009), Genetic algorithms and genetic programming: modern concepts and practical applications, Crc Press.</p>
+<p>Bartoli, A., De Lorenzo, A., Medvet, E. &amp; Tarlao, F. (2014), Playing regex golf with genetic programming, in ‘Proceedings of the 2014 Annual Conference on Genetic and Evolutionary Computation’, pp. 1063–1070.</p>
+<p>Cramer, N. L. (1985), A representation for the adaptive generation of simple sequential programs, in ‘Proceedings of the first international conference on genetic algorithms’, pp. 183–187.</p>
+<p>Galvan-Lopez, E. (2008), ‘Efficient graph-based genetic programming representation with multiple outputs’, International Journal of Automation and Computing 5(1), 81–89.</p>
+<p>Koza, J. R. (1989), Hierarchical genetic algorithms operating on populations of computer programs., in ‘IJCAI’, Vol. 89, pp. 768–774.</p>
+<p>Koza, J. R. (1990), ‘Non-linear genetic algorithms for solving problems’. US Patent 4,935,877.</p>
+<p>Koza, J. R. (2010), ‘Human-competitive results produced by genetic programming’, Genetic programming and evolvable machines 11(3-4), 251–284.</p>
+<p>Koza, J. R. &amp; Koza, J. R. (1992), Genetic programming: on the programming of computers by means of natural selection, Vol. 1, MIT press.</p>
+<p>Perkis, T. (1994), Stack-based genetic programming, in ‘Proceedings of the First IEEE Conference on Evolutionary Computation. IEEE World Congress on Computational Intelligence’, IEEE, pp. 148–153.</p>
+<p>Segaran, T. (2007), Programming collective intelligence: building smart web 2.0 applications, ” O’Reilly Media, Inc.”.</p>
+<p>Weise, T. (2009), ‘Global optimization algorithms-theory and application’, Self-Published Thomas Weise .</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#What-is-genetic-programming-Describe-its-history-briefly"><span class="toc-number">1.</span> <span class="toc-text">What is genetic programming? Describe its history briefly.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-is-it-related-to-the-genetic-algorithms-that-we-discussed-before"><span class="toc-number">2.</span> <span class="toc-text">How is it related to the genetic algorithms that we discussed before?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What-kind-of-genotype-representations-are-used-in-GP"><span class="toc-number">3.</span> <span class="toc-text">What kind of genotype representations are used in GP?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#References"><span class="toc-number">4.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/05/30/Genetic-Programming/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/05/30/Genetic-Programming/&text=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/05/30/Genetic-Programming/&is_video=false&description=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Genetic Programming&body=Check out this article: http://yoursite.com/2020/05/30/Genetic-Programming/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/05/30/Genetic-Programming/&title=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/05/30/Genetic-Programming/&name=Genetic Programming&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/05/30/Genetic-Programming/&t=Genetic Programming" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020
+    blackdogtop
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-168807126-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

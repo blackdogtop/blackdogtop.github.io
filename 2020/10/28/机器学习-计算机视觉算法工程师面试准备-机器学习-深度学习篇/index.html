@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="机器学习1. 有哪些回归模型123451. 什么是回归2. 三个度量3. 普通线性回归4. 决策树回归（回归树）:最小二乘 -&gt; 启发式算法 -&gt; 遍历所有特征的所有取值 -&gt; Loss最小的切分点 -&gt; 空间区域划分5. SVR支持向量回归: 不使用MSE作为Loss -&gt; 回归分析回归分析常见回归模型原理和实现Regression Tree 回归树支持向量机原理(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习&#x2F;计算机视觉算法工程师面试准备-机器学习&#x2F;深度学习篇">
+<meta property="og:url" content="http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/index.html">
+<meta property="og:site_name" content="blackdogtop">
+<meta property="og:description" content="机器学习1. 有哪些回归模型123451. 什么是回归2. 三个度量3. 普通线性回归4. 决策树回归（回归树）:最小二乘 -&gt; 启发式算法 -&gt; 遍历所有特征的所有取值 -&gt; Loss最小的切分点 -&gt; 空间区域划分5. SVR支持向量回归: 不使用MSE作为Loss -&gt; 回归分析回归分析常见回归模型原理和实现Regression Tree 回归树支持向量机原理(">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-28T08:30:26.000Z">
+<meta property="article:modified_time" content="2020-12-04T06:12:42.653Z">
+<meta property="article:author" content="blackdogtop">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/blackcat.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/android-chrome-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/09/05/%E6%8A%95%E5%BD%B1%E4%BB%AA%E9%80%89%E8%B4%AD%E6%8C%87%E5%8D%97/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&text=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&is_video=false&description=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇&body=Check out this article: http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&name=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&t=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器学习"><span class="toc-number">1.</span> <span class="toc-text">机器学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-有哪些回归模型"><span class="toc-number">1.1.</span> <span class="toc-text">1. 有哪些回归模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-支持向量机SVM"><span class="toc-number">1.2.</span> <span class="toc-text">2. 支持向量机SVM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-逻辑回归-Logistic-Regression"><span class="toc-number">1.3.</span> <span class="toc-text">3. 逻辑回归 (Logistic Regression)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-L1-L2-正则化"><span class="toc-number">1.4.</span> <span class="toc-text">4. L1 L2 正则化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-独立同分布"><span class="toc-number">1.5.</span> <span class="toc-text">5. 独立同分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-模型过拟合"><span class="toc-number">1.6.</span> <span class="toc-text">6. 模型过拟合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-泛化误差"><span class="toc-number">1.7.</span> <span class="toc-text">7. 泛化误差</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-ID3-C4-5-CART"><span class="toc-number">1.8.</span> <span class="toc-text">8. ID3 C4.5 CART</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-ROC-AUC"><span class="toc-number">1.9.</span> <span class="toc-text">9. ROC AUC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-集成学习"><span class="toc-number">1.10.</span> <span class="toc-text">10. 集成学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Adaboost"><span class="toc-number">1.11.</span> <span class="toc-text">11. Adaboost</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-梯度提升树-GBDT"><span class="toc-number">1.12.</span> <span class="toc-text">12. 梯度提升树 GBDT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Bagging-随机森林-Random-Forest"><span class="toc-number">1.13.</span> <span class="toc-text">13. Bagging 随机森林 (Random Forest)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度学习"><span class="toc-number">2.</span> <span class="toc-text">深度学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-损失函数"><span class="toc-number">2.1.</span> <span class="toc-text">1. 损失函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-激活函数"><span class="toc-number">2.2.</span> <span class="toc-text">2. 激活函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Dropout"><span class="toc-number">2.3.</span> <span class="toc-text">3. Dropout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Batch-Normalization-BN"><span class="toc-number">2.4.</span> <span class="toc-text">4. Batch Normalization (BN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-卷积神经网络-CNN"><span class="toc-number">2.5.</span> <span class="toc-text">5. 卷积神经网络 (CNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-1卷积作用"><span class="toc-number">2.6.</span> <span class="toc-text">6. 1*1卷积作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-ResNet"><span class="toc-number">2.7.</span> <span class="toc-text">7. ResNet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-LSTM"><span class="toc-number">2.8.</span> <span class="toc-text">8. LSTM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-梯度消失-梯度爆炸-解决方法"><span class="toc-number">2.9.</span> <span class="toc-text">9. 梯度消失 梯度爆炸 解决方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-CNN优化器"><span class="toc-number">2.10.</span> <span class="toc-text">10. CNN优化器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-池化层反向传播"><span class="toc-number">2.11.</span> <span class="toc-text">11. 池化层反向传播</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他"><span class="toc-number">3.</span> <span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-强化学习vs-监督学习"><span class="toc-number">3.1.</span> <span class="toc-text">1. 强化学习vs.监督学习</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">blackdogtop</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-10-28T08:30:26.000Z" itemprop="datePublished">2020-10-28</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a>, <a class="tag-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h2><h3 id="1-有哪些回归模型"><a href="#1-有哪些回归模型" class="headerlink" title="1. 有哪些回归模型"></a>1. 有哪些回归模型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是回归</span><br><span class="line">2. 三个度量</span><br><span class="line">3. 普通线性回归</span><br><span class="line">4. 决策树回归（回归树）:最小二乘 -&gt; 启发式算法 -&gt; 遍历所有特征的所有取值 -&gt; Loss最小的切分点 -&gt; 空间区域划分</span><br><span class="line">5. SVR支持向量回归: 不使用MSE作为Loss -&gt;</span><br></pre></td></tr></table></figure>
+<p><a href="https://baike.baidu.com/item/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90" target="_blank" rel="noopener">回归分析</a><br><a href="https://zh.wikipedia.org/zh-cn/%E8%BF%B4%E6%AD%B8%E5%88%86%E6%9E%90" target="_blank" rel="noopener">回归分析</a><br><a href="https://zhuanlan.zhihu.com/p/94152890" target="_blank" rel="noopener">常见回归模型原理和实现</a><br><a href="https://blog.csdn.net/weixin_40604987/article/details/79296427" target="_blank" rel="noopener">Regression Tree 回归树</a><br><a href="https://www.cnblogs.com/pinard/p/6113120.html" target="_blank" rel="noopener">支持向量机原理(五)线性支持回归</a></p>
+<h3 id="2-支持向量机SVM"><a href="#2-支持向量机SVM" class="headerlink" title="2. 支持向量机SVM"></a>2. 支持向量机SVM</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. 感知机: 超平面分隔二元类别 -&gt; 如何找到泛化能力最好的超平面</span><br><span class="line">2. SVM思想: 离超平面近的点远离超平面 最大化几何间隔 i.e. 分开样本基础上(perceptron)所有点和超平面有一定函数距离</span><br><span class="line">3. 支持向量: 和超平面平行的保持一定的函数距离的这两个超平面对应的向量</span><br><span class="line">4. SVM目标函数与优化: 所有点到超平面大于一定距离 -&gt; 函数间隔为1 -&gt; 凸二次优化 -&gt; 拉格朗日乘子 -&gt; KKT条件下的对偶问题 -&gt; SMO算法 -&gt; w&#x2F;b的值 -&gt; 得到支持向量</span><br><span class="line">5. 非线性可分: 低维到高维</span><br><span class="line">6. 核函数: 如果低维度大则高维计算量大 -&gt; 核函数 -&gt; (线性、多项式、高斯、Sigmoid)核函数</span><br><span class="line">7. 优点: 大量核函数 高维问题有效 一部分支持向量做超平面决策无需全部数据 不是海量数据泛化强准确率高</span><br><span class="line">8. 缺点: 样本量过大核函数维度高计算量大 非线性问题很难选一个合适的核函数 对缺失数据敏感</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6097604.html" target="_blank" rel="noopener">支持向量机原理(一) 线性支持向量机</a><br><a href="https://www.zhihu.com/question/20466147" target="_blank" rel="noopener">支持向量机中的函数距离和几何距离怎么理解？</a><br><a href="https://zh.wikipedia.org/wiki/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E6%95%B0" target="_blank" rel="noopener">拉格朗日乘数</a><br><a href="https://zhuanlan.zhihu.com/p/38163970" target="_blank" rel="noopener">Karush-Kuhn-Tucker (KKT)条件</a><br><a href="https://www.cnblogs.com/pinard/p/6103615.html" target="_blank" rel="noopener">支持向量机原理(三)线性不可分支持向量机与核函数</a><br><a href="https://www.cnblogs.com/pinard/p/6111471.html" target="_blank" rel="noopener">支持向量机原理(四)SMO算法原理</a></p>
+<h3 id="3-逻辑回归-Logistic-Regression"><a href="#3-逻辑回归-Logistic-Regression" class="headerlink" title="3. 逻辑回归 (Logistic Regression)"></a>3. 逻辑回归 (Logistic Regression)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是逻辑回归: 分类 -&gt; 落在不同实数区间的模型输出值分类</span><br><span class="line">2. 激活函数: 二分类 sigmoid -&gt; 取值范围[0, 1]</span><br><span class="line">3. 损失函数: 极大似然法: 两个概率公式 -&gt; 似然函数 -&gt; 取对数 -&gt; 最大化极大似然函数&#x3D;最小化Loss function</span><br><span class="line">4. 优化: 梯度下降 牛顿法</span><br><span class="line">5. 正则化: L1, L2</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6029432.html" target="_blank" rel="noopener">逻辑回归原理小结</a><br><a href="https://zhuanlan.zhihu.com/p/74874291" target="_blank" rel="noopener">【机器学习】逻辑回归（非常详细）</a></p>
+<h3 id="4-L1-L2-正则化"><a href="#4-L1-L2-正则化" class="headerlink" title="4. L1 L2 正则化"></a>4. L1 L2 正则化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是正则化: 控制模型复杂度 预防过拟合 -&gt; Loss添加惩罚项</span><br><span class="line">2.1 理解正则化约束条件估计: 控制模型复杂度 -&gt; 减少W个数 -&gt; 让W中一些元素为0或控制非0元素个数 -&gt; min J(W;x,y) s.t. ||W||0&lt;C (NP问题) -&gt; min J(W;x,y) s.t. ||W||1&lt;&#x3D;C or ||W||2&lt;&#x3D;C -&gt; 拉格朗日算子法 -&gt; min J(W;x,y)+a||W||1 or a||W||2^2</span><br><span class="line">2.2 理解正则化极大似然估计: L1正则 -&gt; 模型参数服从零均值拉普拉斯分布 L2正则 -&gt; 模型参数服从零均值正态分布</span><br><span class="line">3. 可视化解释为什么L1正则化更大可能产生稀疏解</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/74874291" target="_blank" rel="noopener">【机器学习】逻辑回归（非常详细）</a><br><a href="https://zhuanlan.zhihu.com/p/29360425" target="_blank" rel="noopener">深入理解L1、L2正则化</a></p>
+<h3 id="5-独立同分布"><a href="#5-独立同分布" class="headerlink" title="5. 独立同分布"></a>5. 独立同分布</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是独立同分布: 掷骰子 -&gt; 独立(随机变量之间的取值互不影响) -&gt; 同分布(分布形状和分布参数相同)</span><br><span class="line">2. 独立同分布的意义: 机器学习根据已有数据拟合未知数据 -&gt; 数据有总体代表性 -&gt; 当不符合独立同分布 -&gt; 模型准确度低 无法收敛 没有泛化</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/52530189" target="_blank" rel="noopener">独立同分布 independent and identically distributed</a></p>
+<h3 id="6-模型过拟合"><a href="#6-模型过拟合" class="headerlink" title="6. 模型过拟合"></a>6. 模型过拟合</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是过拟合: 模型过于匹配数据集 -&gt; 无法预测位置数据 -&gt; 模型没有泛化能力</span><br><span class="line">2. 为什么过拟合: 参数过多 结构过于复杂</span><br><span class="line">3. 如何避免过拟合: 数据集层面: 扩大数据集 -&gt; 交叉验证(训练 验证 测试集) 训练层面: 剪枝 -&gt; 早停 -&gt; 正则化 -&gt; dropout</span><br></pre></td></tr></table></figure>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E9%81%8E%E9%81%A9" target="_blank" rel="noopener">过拟合</a></p>
+<h3 id="7-泛化误差"><a href="#7-泛化误差" class="headerlink" title="7. 泛化误差"></a>7. 泛化误差</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是泛化误差: 训练误差是模型在训练集上的误差 -&gt; 泛化误差是模型在测试集上的误差</span><br><span class="line">2. 泛化误差公式: 泛化误差可分解为偏差 方差之和 -&gt; 偏差是模型预测与真实结果偏离程度 -&gt; 方差是模型在不同数据上的稳定程度 -&gt; 偏差大 欠拟合 方差大 过拟合</span><br><span class="line">3. 如何降低泛化误差: 解决欠拟合: 减小正则化 添加特征 解决过拟合: 扩大数据集 交叉验证 剪枝 早停 正则化 dropout</span><br><span class="line">4. 泛化误差的计算: 交叉验证求平均值</span><br></pre></td></tr></table></figure>
+<p><a href="https://blog.csdn.net/zhihua_oba/article/details/78684257" target="_blank" rel="noopener">经验误差与泛化误差、偏差与方差、欠拟合与过拟合、交叉验证</a></p>
+<h3 id="8-ID3-C4-5-CART"><a href="#8-ID3-C4-5-CART" class="headerlink" title="8. ID3 C4.5 CART"></a>8. ID3 C4.5 CART</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ID3: 信息熵 -&gt; 信息增益 -&gt; 如何构建树(根据信息增益大小) -&gt; 编号属性的缺点(引出C4.5)</span><br><span class="line">C4.5: 信息增益&#x2F;增益率</span><br><span class="line">CART: 基尼指数(Gini index) -&gt; Gini(D)越小，数据集D纯度越高</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/26760551" target="_blank" rel="noopener">深入浅出理解决策树算法（二）-ID3算法与C4.5算法</a><br><a href="">周志华–机器学习</a></p>
+<h3 id="9-ROC-AUC"><a href="#9-ROC-AUC" class="headerlink" title="9. ROC AUC"></a>9. ROC AUC</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ROC: Receiver Operating Characteristic -&gt; 表示泛化性能 -&gt; 横轴假正例率(False Positive Rate) 纵轴真正确率(True Positive Rate) -&gt; 面积越大越好</span><br><span class="line">2. AUC: Area Under ROC Curve -&gt; ROC的面积</span><br></pre></td></tr></table></figure>
+<p><a href="">周志华–机器学习</a></p>
+<h3 id="10-集成学习"><a href="#10-集成学习" class="headerlink" title="10. 集成学习"></a>10. 集成学习</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是集成学习: 构建多个机器学习器完成任务 (个体学习器+结合策略) -&gt; 个体学习器(同质&#x2F;异质)</span><br><span class="line">2. 同质个体学习器: CART&#x2F;神经网络 -&gt; 强依赖(串行) - boosting &#x2F; 非强依赖(并行) - bagging&#x2F;随机森林</span><br><span class="line">3. boosting: 利用前一轮迭代弱学习器的误差率来更新训练集的权重 -&gt; AdaBoost&#x2F;梯度提升树</span><br><span class="line">4. bagging: 随机采样(有放回)训练个体学习器 结合策略生成强学习器</span><br><span class="line">5. 结合策略: 平均法(个体学习器输出平均值) &#x2F; 投票法(多数投票法 绝对多数投票法 加权投票法) &#x2F; 学习法</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6131423.html" target="_blank" rel="noopener">集成学习原理小结</a></p>
+<h3 id="11-Adaboost"><a href="#11-Adaboost" class="headerlink" title="11. Adaboost"></a>11. Adaboost</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是Adaboost: 一个boosting算法 可用与分类和回归</span><br><span class="line">2. 分类: 第k个弱学习器误差率(预测错误的概率) -&gt; 权重参数(误差率越大权重参数越小 正确&#x2F;误差率对数) -&gt; k+1弱学习器权重(归一化*exp(-权重参数*标签*预测)) 预测错误K+1权重大 -&gt; 结合策略 sign(每个弱学习器权重参数*预测)</span><br><span class="line">3. 回归: 第k个弱学习器误差率 样本相对误差率&#x2F;最大误差累加(MSE MAE) -&gt; 权重系数(误差&#x2F;正确率) -&gt; k+1弱学习器权重(归一化*权重系数的指数倍正确率) -&gt; 结合策略(权重中位数)</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6133937.html" target="_blank" rel="noopener">集成学习之Adaboost算法原理小结</a></p>
+<h3 id="12-梯度提升树-GBDT"><a href="#12-梯度提升树-GBDT" class="headerlink" title="12. 梯度提升树 GBDT"></a>12. 梯度提升树 GBDT</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是GBDT: 向前分布算法 + CART回归树</span><br><span class="line">2. 训练过程: 每个弱学习器在上一个弱学习器产生的残差的基础上训练</span><br><span class="line">3. 负梯度拟合: 损失函数负梯度 -&gt; 利用(𝑥𝑖,𝑟𝑡𝑖)拟合一棵CART树 共计t棵 -&gt; 计算叶子区域最佳拟合值 -&gt; 更新强学习器</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6140514.html" target="_blank" rel="noopener">梯度提升树(GBDT)原理小结</a><br><a href="https://www.cnblogs.com/bnuvincent/p/9693190.html" target="_blank" rel="noopener">机器学习算法GBDT</a><br><a href="https://zh.wikipedia.org/wiki/%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%8A%80%E6%9C%AF" target="_blank" rel="noopener">梯度提升技术</a></p>
+<h3 id="13-Bagging-随机森林-Random-Forest"><a href="#13-Bagging-随机森林-Random-Forest" class="headerlink" title="13. Bagging 随机森林 (Random Forest)"></a>13. Bagging 随机森林 (Random Forest)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. bagging: 有放回采样</span><br><span class="line">2. bagging 结合策略: 分类使用投票法 回归使用平均法</span><br><span class="line">3. bagging 算法流程: 对训练集第t次随机采样 共采集m次(有放回) 得到m个样本的集合 -&gt; 用样本集合训练第t个弱学习器 -&gt; 分类则投票 回归则平均值</span><br><span class="line">4. 随机森林: 使用CART作弱学习器 随机一部分样本n𝑠𝑢𝑏选择其中最优的属性划分子树</span><br><span class="line">5. RF 算法流程： 对训练集第t次随机采样 共采集m次(有放回) 得到m个样本的集合 -&gt; 选择一部分样本中最优的样本特征划分左右子树 -&gt; 分类则投票 回归则平均值</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/pinard/p/6156009.html" target="_blank" rel="noopener">Bagging与随机森林算法原理小结</a></p>
+<h2 id="深度学习"><a href="#深度学习" class="headerlink" title="深度学习"></a>深度学习</h2><h3 id="1-损失函数"><a href="#1-损失函数" class="headerlink" title="1. 损失函数"></a>1. 损失函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是损失函数: 预测值和真实值的偏差</span><br><span class="line">2. loss&#x2F;cost function区别: loss针对单个训练样本 cost针对整个训练集</span><br><span class="line">3. 回归损失函数: MSE -&gt; MAE -&gt; MSE拟合更快 -&gt; MAE更鲁棒(函数形状 背景假设) -&gt; Huber</span><br><span class="line">4. 分类损失函数: 0-1 -&gt; 交叉熵(cross-entropy) -&gt; Hinge</span><br><span class="line">5. 分类问题为什么不用MSE而是cross-entropy: MSE高斯分布 -&gt; CE极大似然角度 -&gt; CE信息论角度(KL) -&gt; 从结果角度分析</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/58883095" target="_blank" rel="noopener">常见的损失函数(loss function)总结</a><br><a href="https://zhuanlan.zhihu.com/p/77686118" target="_blank" rel="noopener">机器学习常用损失函数小结</a><br><a href="https://zhuanlan.zhihu.com/p/80370381" target="_blank" rel="noopener">机器学习中的 7 大损失函数实战总结（附Python演练）</a><br><a href="https://baike.baidu.com/item/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">损失函数</a><br><a href="https://www.cnblogs.com/chenjieyouge/p/12902926.html" target="_blank" rel="noopener">LR梯度下降法MSE演练</a><br><a href="https://zhuanlan.zhihu.com/p/70804197" target="_blank" rel="noopener">为什么用交叉熵做损失函数</a><br><a href="https://zhuanlan.zhihu.com/p/37217242" target="_blank" rel="noopener">常见损失函数小结</a></p>
+<h3 id="2-激活函数"><a href="#2-激活函数" class="headerlink" title="2. 激活函数"></a>2. 激活函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. 激活函数是什么: 神经网络中的非线性成分(线性函数无论怎么叠加都是线性) -&gt; 实际要解决的问题大多非线性</span><br><span class="line">2. sigmoid: [0, 1]区间 -&gt; 饱和区间(导数为0) 非0对称 指数计算量大</span><br><span class="line">3. tanh: [-1, 1]区间 -&gt; 饱和区间(反向传播梯度消失) 计算量大</span><br><span class="line">3. ReLU: 计算快 -&gt; 输入为负数梯度为0(神经元死亡) -&gt; 降低学习率&#x2F;换成Leaky ReLU</span><br><span class="line">4. 零对称性: 当非0中心对称 -&gt; 输出恒正&#x2F;负 -&gt; 参数所有参数W每次反向传播仅能一起增加&#x2F;减小 -&gt; 当需要两个Wi,Wj一个增大一个减小 -&gt; 仅能Z字更新 -&gt; 收敛慢</span><br><span class="line">6. 什么是好的激活函数: 零对称 -&gt; 无饱和区 -&gt; 计算高效</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/102502396" target="_blank" rel="noopener">机器学习（6）——激活函数</a><br><a href="https://zhuanlan.zhihu.com/p/80730031" target="_blank" rel="noopener">深度学习中【激活函数】存在的意义是什么？</a><br><a href="https://zhuanlan.zhihu.com/p/25110450" target="_blank" rel="noopener">聊一聊深度学习的activation function</a><br><a href="https://www.jiqizhixin.com/articles/2019-10-23" target="_blank" rel="noopener">深度学习基础——化直为曲：激活函数</a><br><a href="https://liam.page/2018/04/17/zero-centered-active-function/" target="_blank" rel="noopener">谈谈激活函数以零为中心的问题</a></p>
+<h3 id="3-Dropout"><a href="#3-Dropout" class="headerlink" title="3. Dropout"></a>3. Dropout</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是Dropout: 暂时删除一部分神经元和连接以防止过拟合 (丢弃的神经元不参加向前传播和参数更新 但测试时会被激活)</span><br><span class="line">2. 历史: 2012年提出 -&gt; 2015年BN提出 -&gt; 二者不兼容 -&gt; NN切换过程中的方差不一致</span><br><span class="line">3. 过程: 随机删除一半神经元其他层不变 -&gt; 向前传播 -&gt; 反向传播更新参数 -&gt; 恢复被删除的神经元 -&gt; 重复此过程</span><br><span class="line">4. rescale: dropout使网络输出的期望不同 -&gt; 神经元输出y的期望 p*y+(1-p)*0&#x3D;p*y -&gt; 训练过程中除以p 或 测试过程中乘以p</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.jiqizhixin.com/graph/technologies/1c91194a-1732-4fb3-90c9-e0135c69027e" target="_blank" rel="noopener">Dropout</a><br><a href="https://zhuanlan.zhihu.com/p/38200980" target="_blank" rel="noopener">深度学习中Dropout原理解析</a></p>
+<h3 id="4-Batch-Normalization-BN"><a href="#4-Batch-Normalization-BN" class="headerlink" title="4. Batch Normalization (BN)"></a>4. Batch Normalization (BN)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 背景: NN层之间存在耦合性和关联性 -&gt; 参数变化 -&gt; 随着网络深度而被放大 输入分布变化 -&gt; ICS(网络参数的改变引起内部数据分布变化) -&gt; 深层网络不断适应输入数据分布变化 训练陷入饱和区(sigmoid) -&gt; 白化(去除相关性+相同均值方差 i.e.独立同分布)&#x2F;BN</span><br><span class="line">2. 算法思想: 单独对每个特征归一化 -&gt; 相同的均值和方差+线性变换 -&gt; 公式</span><br><span class="line">3. 测试阶段: 对测试样本归一化使其无偏估计</span><br><span class="line">4. 优势: 加快学习速度 简化调参 可以使用饱和激活函数(sigmoid tanh) 正则化效果</span><br></pre></td></tr></table></figure>
+<p><a href="https://zhuanlan.zhihu.com/p/34879333" target="_blank" rel="noopener">Batch Normalization原理与实战</a></p>
+<h3 id="5-卷积神经网络-CNN"><a href="#5-卷积神经网络-CNN" class="headerlink" title="5. 卷积神经网络 (CNN)"></a>5. 卷积神经网络 (CNN)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 卷积操作: kernel在输入图像上滑动(内积)以提取图像特征</span><br><span class="line">2. 池化操作的意义: 降维减少参数 增大深层卷积的感受野</span><br><span class="line">3. 感受野: 某层feature map看到之前层的区域范围</span><br></pre></td></tr></table></figure>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">卷积神经网络</a><br><a href="https://github.com/NLP-LOVE/ML-NLP/tree/master/Deep%20Learning/11.%20CNN" target="_blank" rel="noopener">11. 卷积神经网络(CNN)</a><br><a href="https://www.cnblogs.com/pinard/p/6483207.html" target="_blank" rel="noopener">卷积神经网络(CNN)模型结构</a><br><a href="https://www.nowcoder.com/discuss/371584?source_id=profile_create&channel=1009" target="_blank" rel="noopener">腾讯AI Lab面试 日常实习【超详细记录 已拿offer】</a><br><a href="https://www.cnblogs.com/shine-lee/p/12069176.html" target="_blank" rel="noopener">彻底搞懂感受野的含义与计算</a></p>
+<h3 id="6-1-1卷积作用"><a href="#6-1-1卷积作用" class="headerlink" title="6. 1*1卷积作用"></a>6. 1*1卷积作用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">升&#x2F;降维</span><br><span class="line">加入非线性</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.zhihu.com/question/56024942/answer/194997553" target="_blank" rel="noopener">卷积神经网络中用1*1 卷积有什么作用或者好处呢？</a></p>
+<h3 id="7-ResNet"><a href="#7-ResNet" class="headerlink" title="7. ResNet"></a>7. ResNet</h3><p><a href="https://blog.csdn.net/weixin_39504171/article/details/104965860" target="_blank" rel="noopener">机器学习32:对Resnet几个问题的理解</a></p>
+<h3 id="8-LSTM"><a href="#8-LSTM" class="headerlink" title="8. LSTM"></a>8. LSTM</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 什么是LSTM</span><br><span class="line">2. 三个门结构</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.jianshu.com/p/95d5c461924c" target="_blank" rel="noopener">【译】理解LSTM（通俗易懂版）</a><br><a href="https://en.wikipedia.org/wiki/Long_short-term_memory" target="_blank" rel="noopener">Long short-term memory</a></p>
+<h3 id="9-梯度消失-梯度爆炸-解决方法"><a href="#9-梯度消失-梯度爆炸-解决方法" class="headerlink" title="9. 梯度消失 梯度爆炸 解决方法"></a>9. 梯度消失 梯度爆炸 解决方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 深层网络角度: 梯度下降 -&gt; 梯度更新指数增加&#x2F;衰减</span><br><span class="line">2. 激活函数: 非线性激活函数(sigmoid&#x2F;tanh)导数在[0,0.25]&#x2F;[0,1]之间 -&gt; 权重更新(链式法则)梯度消失</span><br><span class="line">3. 解决方法: L1&#x2F;L2正则 ReLU激活函数 BN ResNet</span><br></pre></td></tr></table></figure>
+<p><a href="https://blog.csdn.net/qq_25737169/article/details/78847691" target="_blank" rel="noopener">详解机器学习中的梯度消失、爆炸原因及其解决方法</a></p>
+<h3 id="10-CNN优化器"><a href="#10-CNN优化器" class="headerlink" title="10. CNN优化器"></a>10. CNN优化器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. BGD: 对整个训练集计算代价函数 -&gt; 大量数据计算慢</span><br><span class="line">2. SGD: 一次一更新(频繁)</span><br><span class="line">3. Momentum: 梯度方向不变的维度速度加快 梯度方向变化维度更新减慢 -&gt; v &#x3D; mu*v - LR*dw  w &#x3D; w + v</span><br><span class="line">4. RMSprop: root mean square prop -&gt; 消除梯度下降中的摆动(与Momentum类似)</span><br><span class="line">5. Adam: apaptive moment estimation -&gt; 相当于RMSprop+Momentum</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.cnblogs.com/guoyaohua/p/8542554.html" target="_blank" rel="noopener">深度学习——优化器算法Optimizer详解（BGD、SGD、MBGD、Momentum、NAG、Adagrad、Adadelta、RMSprop、Adam）</a><br><a href="https://blog.csdn.net/u013989576/article/details/70241121" target="_blank" rel="noopener">深度学习中momentum的作用</a></p>
+<h3 id="11-池化层反向传播"><a href="#11-池化层反向传播" class="headerlink" title="11. 池化层反向传播"></a>11. 池化层反向传播</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 最大池: 原最大值位置，其余为0</span><br><span class="line">2. 平均池: 平均值</span><br></pre></td></tr></table></figure>
+<p><a href="https://blog.csdn.net/qq_21190081/article/details/72871704" target="_blank" rel="noopener">深度学习笔记（3）——CNN中一些特殊环节的反向传播</a></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="1-强化学习vs-监督学习"><a href="#1-强化学习vs-监督学习" class="headerlink" title="1. 强化学习vs.监督学习"></a>1. 强化学习vs.监督学习</h3><p><a href="https://zh.wikipedia.org/wiki/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0" target="_blank" rel="noopener">强化学习</a><br><a href="https://zhuanlan.zhihu.com/p/26304729" target="_blank" rel="noopener">有监督学习、无监督学习以及强化学习</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器学习"><span class="toc-number">1.</span> <span class="toc-text">机器学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-有哪些回归模型"><span class="toc-number">1.1.</span> <span class="toc-text">1. 有哪些回归模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-支持向量机SVM"><span class="toc-number">1.2.</span> <span class="toc-text">2. 支持向量机SVM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-逻辑回归-Logistic-Regression"><span class="toc-number">1.3.</span> <span class="toc-text">3. 逻辑回归 (Logistic Regression)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-L1-L2-正则化"><span class="toc-number">1.4.</span> <span class="toc-text">4. L1 L2 正则化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-独立同分布"><span class="toc-number">1.5.</span> <span class="toc-text">5. 独立同分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-模型过拟合"><span class="toc-number">1.6.</span> <span class="toc-text">6. 模型过拟合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-泛化误差"><span class="toc-number">1.7.</span> <span class="toc-text">7. 泛化误差</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-ID3-C4-5-CART"><span class="toc-number">1.8.</span> <span class="toc-text">8. ID3 C4.5 CART</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-ROC-AUC"><span class="toc-number">1.9.</span> <span class="toc-text">9. ROC AUC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-集成学习"><span class="toc-number">1.10.</span> <span class="toc-text">10. 集成学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Adaboost"><span class="toc-number">1.11.</span> <span class="toc-text">11. Adaboost</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-梯度提升树-GBDT"><span class="toc-number">1.12.</span> <span class="toc-text">12. 梯度提升树 GBDT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Bagging-随机森林-Random-Forest"><span class="toc-number">1.13.</span> <span class="toc-text">13. Bagging 随机森林 (Random Forest)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度学习"><span class="toc-number">2.</span> <span class="toc-text">深度学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-损失函数"><span class="toc-number">2.1.</span> <span class="toc-text">1. 损失函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-激活函数"><span class="toc-number">2.2.</span> <span class="toc-text">2. 激活函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Dropout"><span class="toc-number">2.3.</span> <span class="toc-text">3. Dropout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Batch-Normalization-BN"><span class="toc-number">2.4.</span> <span class="toc-text">4. Batch Normalization (BN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-卷积神经网络-CNN"><span class="toc-number">2.5.</span> <span class="toc-text">5. 卷积神经网络 (CNN)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-1卷积作用"><span class="toc-number">2.6.</span> <span class="toc-text">6. 1*1卷积作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-ResNet"><span class="toc-number">2.7.</span> <span class="toc-text">7. ResNet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-LSTM"><span class="toc-number">2.8.</span> <span class="toc-text">8. LSTM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-梯度消失-梯度爆炸-解决方法"><span class="toc-number">2.9.</span> <span class="toc-text">9. 梯度消失 梯度爆炸 解决方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-CNN优化器"><span class="toc-number">2.10.</span> <span class="toc-text">10. CNN优化器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-池化层反向传播"><span class="toc-number">2.11.</span> <span class="toc-text">11. 池化层反向传播</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他"><span class="toc-number">3.</span> <span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-强化学习vs-监督学习"><span class="toc-number">3.1.</span> <span class="toc-text">1. 强化学习vs.监督学习</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&text=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&is_video=false&description=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇&body=Check out this article: http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&title=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&name=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/&t=机器学习/计算机视觉算法工程师面试准备-机器学习/深度学习篇" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020
+    blackdogtop
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-168807126-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

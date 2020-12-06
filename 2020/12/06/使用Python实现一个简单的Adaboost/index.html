@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Adaboost的简单实现之三个臭皮匠顶个诸葛亮本文主要讲解一个简单的Adaboost实现，对应代码可见 A simple Adaboost implementation.  主要数据和计算过程也可参考 手把手教你实现一个 AdaBoost  此外，还可以参考scikit-learn Adaboost类库使用小结 和其对应的代码 adaboost-classifier。其调用sklearn库实现了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Python实现一个简单的Adaboost">
+<meta property="og:url" content="http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/index.html">
+<meta property="og:site_name" content="blackdogtop">
+<meta property="og:description" content="Adaboost的简单实现之三个臭皮匠顶个诸葛亮本文主要讲解一个简单的Adaboost实现，对应代码可见 A simple Adaboost implementation.  主要数据和计算过程也可参考 手把手教你实现一个 AdaBoost  此外，还可以参考scikit-learn Adaboost类库使用小结 和其对应的代码 adaboost-classifier。其调用sklearn库实现了">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/Adaboost-pseudocode.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/error%20rate.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/individual%20learner%20weight.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/update%20sample%20weight.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/update%20sample%20weight%20-%20normalisation.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/strong-learner.svg">
+<meta property="article:published_time" content="2020-12-06T04:37:07.000Z">
+<meta property="article:modified_time" content="2020-12-06T06:49:27.651Z">
+<meta property="article:author" content="blackdogtop">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="集成算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/Adaboost-pseudocode.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/blackcat.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/android-chrome-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>使用Python实现一个简单的Adaboost</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/10/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E7%AE%97%E6%B3%95%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AF%87/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&text=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&is_video=false&description=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=使用Python实现一个简单的Adaboost&body=Check out this article: http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&name=使用Python实现一个简单的Adaboost&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&t=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost的简单实现之三个臭皮匠顶个诸葛亮"><span class="toc-number">1.</span> <span class="toc-text">Adaboost的简单实现之三个臭皮匠顶个诸葛亮</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost原理"><span class="toc-number">2.</span> <span class="toc-text">Adaboost原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost的样例解释"><span class="toc-number">3.</span> <span class="toc-text">Adaboost的样例解释</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#样本数据的创建"><span class="toc-number">3.1.</span> <span class="toc-text">样本数据的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化样本权重"><span class="toc-number">3.2.</span> <span class="toc-text">初始化样本权重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可能的切分点"><span class="toc-number">3.3.</span> <span class="toc-text">可能的切分点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#误差率计算"><span class="toc-number">3.4.</span> <span class="toc-text">误差率计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弱学习器权重计算"><span class="toc-number">3.5.</span> <span class="toc-text">弱学习器权重计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#样本权重更新"><span class="toc-number">3.6.</span> <span class="toc-text">样本权重更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#强学习器误差率"><span class="toc-number">3.7.</span> <span class="toc-text">强学习器误差率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三次迭代的结果"><span class="toc-number">3.8.</span> <span class="toc-text">三次迭代的结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完整代码"><span class="toc-number">3.9.</span> <span class="toc-text">完整代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考及相关阅读"><span class="toc-number">4.</span> <span class="toc-text">参考及相关阅读</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        使用Python实现一个简单的Adaboost
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">blackdogtop</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-12-06T04:37:07.000Z" itemprop="datePublished">2020-12-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a>, <a class="tag-link" href="/tags/%E9%9B%86%E6%88%90%E7%AE%97%E6%B3%95/" rel="tag">集成算法</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="Adaboost的简单实现之三个臭皮匠顶个诸葛亮"><a href="#Adaboost的简单实现之三个臭皮匠顶个诸葛亮" class="headerlink" title="Adaboost的简单实现之三个臭皮匠顶个诸葛亮"></a>Adaboost的简单实现之三个臭皮匠顶个诸葛亮</h2><p>本文主要讲解一个简单的Adaboost实现，对应代码可见 <a href="https://github.com/blackdogtop/Machine-Learning/blob/main/Ensemble-Learning/Adaboost/adaboost.py" target="_blank" rel="noopener">A simple Adaboost implementation</a>. <br/></p>
+<p>主要数据和计算过程也可参考 <a href="https://developer.ibm.com/zh/technologies/analytics/articles/machine-learning-hands-on6-adaboost/" target="_blank" rel="noopener">手把手教你实现一个 AdaBoost</a> <br/></p>
+<p>此外，还可以参考<a href="https://www.cnblogs.com/pinard/p/6136914.html" target="_blank" rel="noopener">scikit-learn Adaboost类库使用小结</a> 和其对应的代码 <a href="https://github.com/ljpzzz/machinelearning/blob/master/ensemble-learning/adaboost-classifier.ipynb" target="_blank" rel="noopener">adaboost-classifier</a>。其调用sklearn库实现了一个基于决策树的Adaboost分类。</p>
+<h2 id="Adaboost原理"><a href="#Adaboost原理" class="headerlink" title="Adaboost原理"></a>Adaboost原理</h2><p>Adaboost是一种Boosting算法，弱学习器与弱学习器之间存在强依赖关系。简单来说，Adaboost的实现流程是首先初始化样本权重，进入迭代并计算误差率与弱学习器的权重，根据弱学习器的表现对样本权重分布进行调整，使之前弱学习器做错的样本在后续受到更多关注，当达到最大迭代次数或强学习器误差率低于一定阈值停止迭代。<br/></p>
+<p>Adaboost的伪代码如下<br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/Adaboost-pseudocode.png" alt="adaboost pseudo code"></p>
+<p>此外，更详细的Adaboost原理及解释可参考<br><strong>李航 - 统计学习方法<br>周志华 - 机器学习<br><a href="https://www.cnblogs.com/pinard/p/6133937.html" target="_blank" rel="noopener">集成学习之Adaboost算法原理小结</a></strong></p>
+<h2 id="Adaboost的样例解释"><a href="#Adaboost的样例解释" class="headerlink" title="Adaboost的样例解释"></a>Adaboost的样例解释</h2><p>本小结使用<a href="https://developer.ibm.com/zh/technologies/analytics/articles/machine-learning-hands-on6-adaboost/" target="_blank" rel="noopener">手把手教你实现一个 AdaBoost</a>中的样本数据，旨在实现一个简单的二分类adaboost，详细的计算过程或原理解释也可参考链接。</p>
+<h3 id="样本数据的创建"><a href="#样本数据的创建" class="headerlink" title="样本数据的创建"></a>样本数据的创建</h3><table>
+<thead>
+<tr>
+<th>x</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>y</td>
+<td>1</td>
+<td>1</td>
+<td>-1</td>
+<td>-1</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+</tbody></table>
+<p>其中x表示样本数据，y表示对应每个样本的标签(1或-1)</p>
+<h3 id="初始化样本权重"><a href="#初始化样本权重" class="headerlink" title="初始化样本权重"></a>初始化样本权重</h3><p>每个样本权重的初始化可直接置为<em>1/N</em>，其中N为样本的个数。<br/></p>
+<p>故初始化得到的样本权重为 <strong>(0.167, 0.167, 0.167, 0.167, 0.167, 0.167)</strong> <br/></p>
+<p>初始化样本权重代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.weights &#x3D; [1&#x2F;len(x)] * len(x)  # init sample weights</span><br></pre></td></tr></table></figure>
+
+<h3 id="可能的切分点"><a href="#可能的切分点" class="headerlink" title="可能的切分点"></a>可能的切分点</h3><p>样本的切分点可选 (0.5, 1.5, 2.5, 3.5, 4.5) 中的一个，实际的选择应对比每个切分点的误差率，选择一个最优的弱学习器。<br>样本切分点的list创建代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.svList &#x3D; [(x[i] + x[i - 1]) &#x2F; 2 for i in range(1, len(x))]  # split value of samples</span><br></pre></td></tr></table></figure>
+
+<h3 id="误差率计算"><a href="#误差率计算" class="headerlink" title="误差率计算"></a>误差率计算</h3><p>误差率的计算公式如下<br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/error%20rate.svg" alt="error rate"><br><em>其中<br>m = 1,2,..,M 表示第 m 轮迭代<br>i 表示第 i 个样本<br>W 是样本权重<br>I 表示函数取值为1或0，当括号中的表达式为真时，I 结果为1，反之为0</em> <br/></p>
+<p>如下表所示，根据误差率计算公式可以获取每个可能的切分点产生的弱学习器的误差率，并选择误差率最小的切分点作为最优弱学习器。在第一轮迭代中，当切分点为 1.5 时的误差率最小，<strong>e = 0.167</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>hm(when x &lt; split value)</th>
+<th>hm(when x &gt; split vaue)</th>
+<th>误差率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.5</td>
+<td>1</td>
+<td>-1</td>
+<td>2 * 0.167 = 0.334</td>
+</tr>
+<tr>
+<td>1.5</td>
+<td>1</td>
+<td>-1</td>
+<td>1 * 0.167 = 0.167</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td>1</td>
+<td>-1</td>
+<td>2 * 0.167 = 0.334</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>1</td>
+<td>-1</td>
+<td>3 * 0.167 = 0.501</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>1</td>
+<td>-1</td>
+<td>2 * 0.167 = 0.334</td>
+</tr>
+</tbody></table>
+<p>误差率计算代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">def getErrorRate(self):</span><br><span class="line">    &quot;&quot;&quot;对比所有可能切分点的误差率并获取最小误差率&quot;&quot;&quot;</span><br><span class="line">    def getSingleErrorRate(splitValue):</span><br><span class="line">        &quot;&quot;&quot;判断以split value 为切分点的两种方式里 误差率最小的一个&quot;&quot;&quot;</span><br><span class="line">        errorRate &#x3D; 0</span><br><span class="line">        prediction &#x3D; []  # store predict result</span><br><span class="line">        for i, label in enumerate(self.y):</span><br><span class="line">            predict &#x3D; 1 if self.x[i] &lt; splitValue else -1</span><br><span class="line">            prediction.append(predict)</span><br><span class="line">            if predict * label &gt; 0:  # correct predict</span><br><span class="line">                errorRate +&#x3D; 0 * self.weights[i]</span><br><span class="line">            else:  # wrong predict</span><br><span class="line">                errorRate +&#x3D; 1 * self.weights[i]</span><br><span class="line">        if 1-errorRate &lt; errorRate:</span><br><span class="line">            errorRate &#x3D; 1-errorRate</span><br><span class="line">            prediction &#x3D; [-1 * p for p in prediction]  # convert to additive inverse when min is the other situation</span><br><span class="line">        return errorRate, prediction</span><br><span class="line"></span><br><span class="line">    minErrorRate, bestPrediction &#x3D; getSingleErrorRate(self.svList[0])  # initialise</span><br><span class="line">    for i in range(1, len(self.svList)):</span><br><span class="line">        errorRate, prediction &#x3D; getSingleErrorRate(self.svList[i])</span><br><span class="line">        if errorRate &lt; minErrorRate:</span><br><span class="line">            minErrorRate &#x3D; errorRate</span><br><span class="line">            bestPrediction &#x3D; prediction</span><br><span class="line">    self.hxList.append(bestPrediction)</span><br><span class="line">    return minErrorRate</span><br></pre></td></tr></table></figure>
+
+<h3 id="弱学习器权重计算"><a href="#弱学习器权重计算" class="headerlink" title="弱学习器权重计算"></a>弱学习器权重计算</h3><p>弱学习器权重计算公式如下<br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/individual%20learner%20weight.svg" alt="individual learner weight"><br><em>其中 m = 1,2,..,M 表示第 m 轮迭代<br>可见当弱学习器误差率越小其权重越高，当弱学习器误差率越大其权重越小<br>这样可以使分类精度高的弱学习器起到更大的作用，并削弱精度低的弱学习器的作用。</em> <br/></p>
+<p>经计算，在第一轮迭代中弱学习器的权重 <strong>a = 0.5 * ln((1 – 0.167) / 0.167) = 0.8047</strong> <br/></p>
+<p>弱学习器权重计算代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def getAlpha(self, errorRate):</span><br><span class="line">    alpha &#x3D; 1&#x2F;2 * math.log((1-errorRate) &#x2F; errorRate)</span><br><span class="line">    self.alphaList.append(alpha)</span><br><span class="line">    return alpha</span><br></pre></td></tr></table></figure>
+
+<h3 id="样本权重更新"><a href="#样本权重更新" class="headerlink" title="样本权重更新"></a>样本权重更新</h3><p>样本权重更新公式如下<br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/update%20sample%20weight.svg" alt="update sample weight"><br><em>Z 为规范化因子，其计算公式如下</em><br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/update%20sample%20weight%20-%20normalisation.svg" alt="update sample weight - normalisation"><br><em>其中<br>W 表示样本权重<br>m = 1,2,..,M 表示第 m 轮迭代<br>i 表示第 i 个样本<br>am 表示第m轮迭代的弱学习器的权重<br>当样本被正确分类，exp内为负值，新样本权重变小，反之exp内为正值，新样本权重变大<br>可见当错误分类时，新的样本权重会变大，会在下一轮迭代中得到重视</em> <br/></p>
+<p>根据上述公式可得到在第一轮迭代中每个样本更新之后的样本权重 <strong>(0.1, 0.1, 0.1, 0.1, 0.5, 0.1)</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>分类结果</th>
+<th>样本权重</th>
+<th>规范化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>正确</td>
+<td>0.167 * exp(-0.8047) = 0.075</td>
+<td>0.075 / 0.748 = 0.10</td>
+</tr>
+<tr>
+<td>1</td>
+<td>正确</td>
+<td>0.167 * exp(-0.8047) = 0.075</td>
+<td>0.075 / 0.748 = 0.10</td>
+</tr>
+<tr>
+<td>2</td>
+<td>正确</td>
+<td>0.167 * exp(-0.8047) = 0.075</td>
+<td>0.075 / 0.748 = 0.10</td>
+</tr>
+<tr>
+<td>3</td>
+<td>正确</td>
+<td>0.167 * exp(-0.8047) = 0.075</td>
+<td>0.075 / 0.748 = 0.10</td>
+</tr>
+<tr>
+<td>4</td>
+<td>错误</td>
+<td>0.167 * exp(0.8047) = 0.373</td>
+<td>0.373 / 0.748 = 0.50</td>
+</tr>
+<tr>
+<td>5</td>
+<td>正确</td>
+<td>0.167 * exp(-0.8047) = 0.075</td>
+<td>0.075 / 0.748 = 0.10</td>
+</tr>
+</tbody></table>
+<p>样本权重更新代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">def updateWeights(self, alpha, prediction):</span><br><span class="line">    nextWeights &#x3D; []  # new sample weights</span><br><span class="line">    sumWeight &#x3D; 0</span><br><span class="line">    # get current total sample weights</span><br><span class="line">    for i, weight in enumerate(self.weights):</span><br><span class="line">        flag &#x3D; 1 if prediction[i] &#x3D;&#x3D; self.y[i] else -1  # (yi * Gm(xi)) is 1 if predict is correct else 0</span><br><span class="line">        sumWeight &#x3D; sumWeight + (self.weights[i] * math.exp(-1 * alpha * flag))</span><br><span class="line">    # get new sample weights</span><br><span class="line">    for i, weight in enumerate(self.weights):</span><br><span class="line">        flag &#x3D; 1 if prediction[i] &#x3D;&#x3D; self.y[i] else -1</span><br><span class="line">        nextWeight &#x3D; self.weights[i] * math.exp(-1 * alpha * flag) &#x2F; sumWeight</span><br><span class="line">        nextWeights.append(nextWeight)</span><br><span class="line">    self.weights &#x3D; nextWeights  # update weights</span><br></pre></td></tr></table></figure>
+
+<h3 id="强学习器误差率"><a href="#强学习器误差率" class="headerlink" title="强学习器误差率"></a>强学习器误差率</h3><p>每一轮迭代完成后可以计算强学习器的预测计算其误差率，强学习器的公式如下<br><img src="https://raw.githubusercontent.com/blackdogtop/image-host/master/Machine-Learning/Ensemble-Learning/Adaboost/strong-learner.svg" alt="strong learner"><br><em>其中<br>G(x) 表示强学习器<br>sign 表示一个非线性函数，当输入值大于 0 时 sign(input) 为 1，当输入值小于 0 时 sign(intput) 为 -1<br>m 表示第 m 轮迭代<br>a 表示弱学习器权重<br>h 表示弱学习器</em> <br/></p>
+<p>故当第一轮迭代结束，此时的强学习器为<br>G(x) = sign(alpha * h(x) )<br>= sign(0.8047 * [1, 1, -1, -1, -1, -1])<br>= [1, 1, -1, -1, -1, -1]<br>对于正确标签[1, 1, -1, -1, 1, -1]，此时的误差率为 1/6 = 0.167<br>如果此时达到了预设的误差率阈值或最大迭代次数则停止迭代，否则继续迭代。</p>
+<h3 id="三次迭代的结果"><a href="#三次迭代的结果" class="headerlink" title="三次迭代的结果"></a>三次迭代的结果</h3><p>根据计算可以获得三次迭代的误差率，弱学习器权重，样本权重和强学习器错误率，结果如下表所示</p>
+<table>
+<thead>
+<tr>
+<th>迭代次数<div style="width: 45pt"></th>
+<th>误差率</th>
+<th>弱学习器权重<div style="width: 65pt"></th>
+<th>样本权重<div style="width: 310pt"></th>
+<th>强学习器错误率<div style="width: 80pt"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0.167</td>
+<td>0.8047</td>
+<td>(0.1, 0.1, 0.1, 0.1, 0.5, 0.1)</td>
+<td>0.167</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.2</td>
+<td>0.6931</td>
+<td>(0.0625, 0.0625, 0.250, 0.250, 0.3125, 0.0625)</td>
+<td>0.167</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.1875</td>
+<td>0.7332</td>
+<td>(0.1667, 0.1667, 0.1539, 0.1539, 0.1923, 0.1667)</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>运行代码，将自动迭代三次，并输出每次迭代的结果如下所示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">In the 1 iteration:</span><br><span class="line">误差率: 0.16666666666666666</span><br><span class="line">弱学习器权重: 0.8047189562170503</span><br><span class="line">样本权重: [0.1, 0.1, 0.1, 0.1, 0.5000000000000001, 0.1]</span><br><span class="line">强学习器错误率: 0.16666666666666666</span><br><span class="line"></span><br><span class="line">In the 2 iteration:</span><br><span class="line">误差率: 0.2</span><br><span class="line">弱学习器权重: 0.6931471805599453</span><br><span class="line">样本权重: [0.0625, 0.0625, 0.25, 0.25, 0.31250000000000006, 0.0625]</span><br><span class="line">强学习器错误率: 0.16666666666666666</span><br><span class="line"></span><br><span class="line">In the 3 iteration:</span><br><span class="line">误差率: 0.1875</span><br><span class="line">弱学习器权重: 0.7331685343967135</span><br><span class="line">样本权重: [0.16666666666666666, 0.16666666666666666, 0.15384615384615385, 0.15384615384615385, 0.19230769230769235, 0.16666666666666666]</span><br><span class="line">强学习器错误率: 0.0</span><br><span class="line"></span><br><span class="line">strong learner prediction: [1, 1, -1, -1, 1, -1]</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br></pre></td><td class="code"><pre><span class="line">class AdaboostClassification:</span><br><span class="line">    &quot;&quot;&quot;a simple adaboost implementation (one-dimensional sample)&quot;&quot;&quot;</span><br><span class="line">    def __init__(self, x&#x3D;None, y&#x3D;None):</span><br><span class="line">        # init samples and labels</span><br><span class="line">        if not x and not y:</span><br><span class="line">            x &#x3D; [0, 1, 2, 3, 4, 5]</span><br><span class="line">            y &#x3D; [1, 1, -1, -1, 1, -1]</span><br><span class="line">        self.x &#x3D; x</span><br><span class="line">        self.y &#x3D; y</span><br><span class="line">        self.svList &#x3D; [(x[i] + x[i - 1]) &#x2F; 2 for i in range(1, len(x))]  # split value of samples</span><br><span class="line"></span><br><span class="line">        self.weights &#x3D; [1&#x2F;len(x)] * len(x)  # init sample weights</span><br><span class="line">        self.errThreshold &#x3D; 0.1  # error threshold</span><br><span class="line">        self.maxIterNum &#x3D; 5  # max iteration</span><br><span class="line"></span><br><span class="line">        self.hxList &#x3D; []  # store prediction for each individual learner</span><br><span class="line">        self.alphaList &#x3D; []  # store weight (alpha) for each individual learner</span><br><span class="line"></span><br><span class="line">    def getErrorRate(self):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        calculate optimised individual learner according to split values</span><br><span class="line">        :returns</span><br><span class="line">            minErrorRate: the min error rate from different split values</span><br><span class="line">            bestPrediction: a list stores predict result</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        def getSingleErrorRate(splitValue):</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">            get min single split value error rate from two different situations</span><br><span class="line">            two situations:</span><br><span class="line">                1 when x &gt; split value              -1 when x &gt; split value</span><br><span class="line">                -1 when x &lt; split value     OR      1 when x &lt; split</span><br><span class="line">                error rate -- e                      error rate -- (1-e)</span><br><span class="line">            :params splitValue: the single split value from cvList</span><br><span class="line">            :returns</span><br><span class="line">                min(ErrorRate): min error rate in two different situations</span><br><span class="line">                prediction: a list stores predict result</span><br><span class="line">            &quot;&quot;&quot;</span><br><span class="line">            errorRate &#x3D; 0</span><br><span class="line">            prediction &#x3D; []  # store predict result</span><br><span class="line">            for i, label in enumerate(self.y):</span><br><span class="line">                predict &#x3D; 1 if self.x[i] &lt; splitValue else -1</span><br><span class="line">                prediction.append(predict)</span><br><span class="line">                if predict * label &gt; 0:  # correct predict</span><br><span class="line">                    errorRate +&#x3D; 0 * self.weights[i]</span><br><span class="line">                else:  # wrong predict</span><br><span class="line">                    errorRate +&#x3D; 1 * self.weights[i]</span><br><span class="line">            if 1-errorRate &lt; errorRate:</span><br><span class="line">                errorRate &#x3D; 1-errorRate</span><br><span class="line">                prediction &#x3D; [-1 * p for p in prediction]  # convert to additive inverse when min is the other situation</span><br><span class="line">            return errorRate, prediction</span><br><span class="line"></span><br><span class="line">        minErrorRate, bestPrediction &#x3D; getSingleErrorRate(self.svList[0])  # initialise</span><br><span class="line">        for i in range(1, len(self.svList)):</span><br><span class="line">            errorRate, prediction &#x3D; getSingleErrorRate(self.svList[i])</span><br><span class="line">            if errorRate &lt; minErrorRate:</span><br><span class="line">                minErrorRate &#x3D; errorRate</span><br><span class="line">                bestPrediction &#x3D; prediction</span><br><span class="line">        self.hxList.append(bestPrediction)</span><br><span class="line">        return minErrorRate</span><br><span class="line"></span><br><span class="line">    def getAlpha(self, errorRate):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        calculate individual learner weight(alpha), which is only related to error rate</span><br><span class="line">        formula: 1&#x2F;2 * log((1-errorRate) &#x2F; errorRate)</span><br><span class="line">        :params errorRate: error rate</span><br><span class="line">        :return alpha: the individual learner weight</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        alpha &#x3D; 1&#x2F;2 * math.log((1-errorRate) &#x2F; errorRate)</span><br><span class="line">        self.alphaList.append(alpha)</span><br><span class="line">        return alpha</span><br><span class="line"></span><br><span class="line">    def updateWeights(self, alpha, prediction):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        calculate and update sample weights</span><br><span class="line">        flag (1 or -1) is used in the code to replace the result (yi * Gm(xi))</span><br><span class="line">        formula:</span><br><span class="line">            W(m+1, i) &#x3D; W(m, i) &#x2F; Z * exp(-alpha * yi * Gm(xi))</span><br><span class="line">            Z &#x3D; sum(exp(-alpha * yi * Gm(xi)))</span><br><span class="line">            p.s. if individual learner Gm correct predict the sample xi, then the (-alpha * yi * Gm(xi)) is positive</span><br><span class="line">                 vice versa</span><br><span class="line">        :params</span><br><span class="line">            alpha: current individual learner weight</span><br><span class="line">            prediction: individual learner predict result</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        nextWeights &#x3D; []  # new sample weights</span><br><span class="line">        sumWeight &#x3D; 0</span><br><span class="line">        # get current total sample weights</span><br><span class="line">        for i, weight in enumerate(self.weights):</span><br><span class="line">            flag &#x3D; 1 if prediction[i] &#x3D;&#x3D; self.y[i] else -1  # (yi * Gm(xi)) is 1 if predict is correct else 0</span><br><span class="line">            sumWeight &#x3D; sumWeight + (self.weights[i] * math.exp(-1 * alpha * flag))</span><br><span class="line">        # get new sample weights</span><br><span class="line">        for i, weight in enumerate(self.weights):</span><br><span class="line">            flag &#x3D; 1 if prediction[i] &#x3D;&#x3D; self.y[i] else -1</span><br><span class="line">            nextWeight &#x3D; self.weights[i] * math.exp(-1 * alpha * flag) &#x2F; sumWeight</span><br><span class="line">            nextWeights.append(nextWeight)</span><br><span class="line">        self.weights &#x3D; nextWeights  # update weights</span><br><span class="line"></span><br><span class="line">    def sign(self, input):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        sign function, which can convert input to 1 or -1</span><br><span class="line">        :params input: input value</span><br><span class="line">        :return output: 1 or -1</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return 1 if input &gt; 0 else -1</span><br><span class="line"></span><br><span class="line">    def strongLearner(self):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        get strong learner prediction</span><br><span class="line">        formula:</span><br><span class="line">            G(x) &#x3D; sign(sum(a * h(x))</span><br><span class="line">        :return gx: a list of strong learner prediction</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        # get error rate</span><br><span class="line">        errorRate &#x3D; self.getErrorRate()</span><br><span class="line">        # get individual weight coefficient</span><br><span class="line">        alpha &#x3D; self.getAlpha(errorRate)</span><br><span class="line">        # update data sample weights</span><br><span class="line">        self.updateWeights(alpha, self.hxList[-1])  # hxList[-1] is the prediction of current individual learner</span><br><span class="line"></span><br><span class="line">        # get strong learner output</span><br><span class="line">        gx &#x3D; np.array([0] * len(self.y))  # initialise</span><br><span class="line">        for i, hx in enumerate(self.hxList):  # get prediction for each individual learner</span><br><span class="line">            gx &#x3D; gx + self.alphaList[i] * np.array(hx)</span><br><span class="line">        gx &#x3D; [self.sign(t) for t in gx]</span><br><span class="line"></span><br><span class="line">        print(&#39;误差率: &#123;&#125;\n&#39;</span><br><span class="line">              &#39;弱学习器权重: &#123;&#125;\n&#39;</span><br><span class="line">              &#39;样本权重: &#123;&#125;&#39;</span><br><span class="line">              .format(errorRate, alpha, self.weights))</span><br><span class="line"></span><br><span class="line">        return gx</span><br><span class="line"></span><br><span class="line">    def trainAdaboost(self):</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        train adaboost and stop when the strong error rate less than error threshold or reach max iteration number</span><br><span class="line">        :return gx: the output of strong learner</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        for iteration in range(self.maxIterNum):</span><br><span class="line">            print(&#39;In the &#123;&#125; iteration:&#39;.format(iteration + 1))</span><br><span class="line">            errNum &#x3D; 0</span><br><span class="line">            gx &#x3D; self.strongLearner()</span><br><span class="line">            # calculate error rate</span><br><span class="line">            for i in range(len(gx)):</span><br><span class="line">                if gx[i] !&#x3D; self.y[i]:</span><br><span class="line">                    errNum +&#x3D; 1</span><br><span class="line">            errorRate &#x3D; errNum &#x2F; len(gx)</span><br><span class="line"></span><br><span class="line">            print(&#39;强学习器错误率: &#123;&#125;\n&#39;.format(errorRate))</span><br><span class="line"></span><br><span class="line">            if errorRate &lt; self.errThreshold:</span><br><span class="line">                break</span><br><span class="line">        return gx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &#39;__main__&#39;:</span><br><span class="line">    adaboost &#x3D; AdaboostClassification()</span><br><span class="line">    gx &#x3D; adaboost.trainAdaboost()</span><br><span class="line">    print(&#39;strong learner prediction: &#123;&#125;&#39;.format(gx))</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考及相关阅读"><a href="#参考及相关阅读" class="headerlink" title="参考及相关阅读"></a>参考及相关阅读</h2><p>李航 - 统计学习方法<br>周志华 - 机器学习<br><a href="https://www.cnblogs.com/pinard/p/6133937.html" target="_blank" rel="noopener">集成学习之Adaboost算法原理小结</a><br><a href="https://developer.ibm.com/zh/technologies/analytics/articles/machine-learning-hands-on6-adaboost/" target="_blank" rel="noopener">手把手教你实现一个 AdaBoost</a><br><a href="https://en.wikipedia.org/wiki/AdaBoost" target="_blank" rel="noopener">AdaBoost</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost的简单实现之三个臭皮匠顶个诸葛亮"><span class="toc-number">1.</span> <span class="toc-text">Adaboost的简单实现之三个臭皮匠顶个诸葛亮</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost原理"><span class="toc-number">2.</span> <span class="toc-text">Adaboost原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Adaboost的样例解释"><span class="toc-number">3.</span> <span class="toc-text">Adaboost的样例解释</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#样本数据的创建"><span class="toc-number">3.1.</span> <span class="toc-text">样本数据的创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化样本权重"><span class="toc-number">3.2.</span> <span class="toc-text">初始化样本权重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可能的切分点"><span class="toc-number">3.3.</span> <span class="toc-text">可能的切分点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#误差率计算"><span class="toc-number">3.4.</span> <span class="toc-text">误差率计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弱学习器权重计算"><span class="toc-number">3.5.</span> <span class="toc-text">弱学习器权重计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#样本权重更新"><span class="toc-number">3.6.</span> <span class="toc-text">样本权重更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#强学习器误差率"><span class="toc-number">3.7.</span> <span class="toc-text">强学习器误差率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三次迭代的结果"><span class="toc-number">3.8.</span> <span class="toc-text">三次迭代的结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完整代码"><span class="toc-number">3.9.</span> <span class="toc-text">完整代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考及相关阅读"><span class="toc-number">4.</span> <span class="toc-text">参考及相关阅读</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&text=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&is_video=false&description=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=使用Python实现一个简单的Adaboost&body=Check out this article: http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&title=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&name=使用Python实现一个简单的Adaboost&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://yoursite.com/2020/12/06/%E4%BD%BF%E7%94%A8Python%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Adaboost/&t=使用Python实现一个简单的Adaboost" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020
+    blackdogtop
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-168807126-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
